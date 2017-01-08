@@ -65,9 +65,10 @@ public class LazyLoading {
                 System.out.println("Incrementing factor: " + (factor - 1) + " -> " + factor);
             }
             items.remove(largestItem);
+            System.out.println("Factor is: " + factor + " -> Removing " + (int) (factor - 1) + " small item(s)");
             while (factor > 1) {
                 double smallestItem = items.get(items.size() - 1);
-                System.out.println("Factor is: " + factor + " -> Removing smallest item: " + smallestItem);
+                System.out.println(smallestItem + " removed...");
                 items.remove(smallestItem);
                 factor--;
             }

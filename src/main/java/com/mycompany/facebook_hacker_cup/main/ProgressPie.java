@@ -6,100 +6,70 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.Random;
+import java.util.Arrays;
 import java.util.Scanner;
 
-public class Main {
+public class ProgressPie {
 
     private static final double RADIAN_TO_DEGREE_FACTOR = 180 / Math.PI;
 
-    private Scanner scanner;
-    private File output;
-    private BufferedWriter outputWriter;
+    private final Scanner scanner;
+    private final File output;
+    private final BufferedWriter outputWriter;
 
-    public Main() throws FileNotFoundException {
+    public static void main(String[] args) throws FileNotFoundException, IOException {
+        ProgressPie main = new ProgressPie();
+        main.start();
+        main.close();
+    }
+
+    public ProgressPie() throws FileNotFoundException {
         scanner = new Scanner(this.getClass().getClassLoader().getResourceAsStream("input.txt"));
         scanner.useDelimiter("\n");
         output = new File("out.txt");
         outputWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(output)));
     }
 
-    public static void main(String[] args) throws FileNotFoundException, IOException {
-        if(false) {
-            run();
-        } else {
-            renewInput();
+    private void start() throws IOException {
+        int numberOfCases = Integer.parseInt(scanner.next());
+        for (int i = 1; i <= numberOfCases; i++) {
+            String line = scanner.next();
+            String color = handleCase(line);
+            writeToFile("Case #" + i + ": " + color);
         }
-    }
-
-    private static void run() throws FileNotFoundException, IOException {
-        Main main = new Main();
-        main.start();
-        main.close();
-    }
-    
-    private static void renewInput() throws IOException {
-        Random random = new Random();
-        File input = new File("src/main/resources/input.txt");
-        BufferedWriter inputWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(input)));
-        writeToFile("1000", inputWriter);
-        for (int i = 0; i < 1000; i++) {
-            int p = random.nextInt(101);
-            int x = random.nextInt(101);
-            int y = random.nextInt(101);
-            String line = p + " " + x + " " + y;
-            writeToFile(line, inputWriter);
-        }
-        inputWriter.close();
     }
 
     public void close() throws IOException {
         outputWriter.close();
     }
 
-    private void start() throws IOException {
-        int numberOfCases = Integer.parseInt(scanner.next());
-        for (int i = 1; i <= numberOfCases; i++) {
-            System.out.println("Case #" + i);
-            String line = scanner.next();
-            System.out.println(line);
-            String color = handleCase(line);
-            System.out.println(color);
-            System.out.println("\n");
-            writeToFile("Case #" + i + ": " + color);
-        }
-    }
-
     private String handleCase(String line) {
         Double[] input = readInput(line);
-        if(input[0] == 0) {
+        if (input[0] == 0) {
             return "white";
         }
         if (!inCircle(input[1], input[2])) {
-            System.out.println("Not in circle");
             return "white";
         }
         double progressAngle = 360 * (input[0] / 100);
-        Quadrant q = Quadrant.getFrom(input[1], input[2]);
-        System.out.println(q.name());
-        System.out.println("Progress angle: " + progressAngle);
-        double angleForPoint = 0;
-        switch (q) {
-            case NE:
-                angleForPoint = handleE(input[1], input[2]);
-                break;
-            case SE:
-                angleForPoint = handleE(input[1], input[2]);
-                break;
-            case SW:
-                angleForPoint = handleSW(input[1], input[2]);
-                break;
-            case NW:
-                angleForPoint = handleNW(input[1], input[2]);
-                break;
-        }
-        System.out.println("Angle to reach point: " + angleForPoint);
+        Quadrant quadrant = Quadrant.getFrom(input[1], input[2]);
+        double angleForPoint = calculateForQuadrant(quadrant, input);
         return progressAngle >= angleForPoint ? "black" : "white";
+    }
+
+    private double calculateForQuadrant(Quadrant quadrant, Double[] input) {
+        switch (quadrant) {
+            case NE:
+                return handleE(input[1], input[2]);
+            case SE:
+                return handleE(input[1], input[2]);
+            case SW:
+                return handleSW(input[1], input[2]);
+            case NW:
+                return handleNW(input[1], input[2]);
+            default:
+                throw new RuntimeException("Not even possible");
+        }
     }
 
     private Double[] readInput(String line) {
@@ -146,9 +116,38 @@ public class Main {
         outputWriter.newLine();
     }
 
-    private static void writeToFile(String line, BufferedWriter inputWriter) throws IOException {
-        inputWriter.append(line);
-        inputWriter.newLine();
-    }
+    private static enum Quadrant {
+        NE(50, 100, 50, 100),
+        SE(50, 100, 0, 49),
+        SW(0, 49, 0, 50),
+        NW(0, 49, 51, 100);
 
+        private final double minX;
+        private final double maxX;
+        private final double minY;
+        private final double maxY;
+
+        private Quadrant(double minX, double maxX, double minY, double maxY) {
+            this.minX = minX;
+            this.maxX = maxX;
+            this.minY = minY;
+            this.maxY = maxY;
+        }
+
+        public static Quadrant getFrom(double x, double y) {
+            return Arrays.asList(values()).stream()
+                    .filter(v -> v.validX(x))
+                    .filter(v -> v.validY(y))
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("No quadrant found, wtf!?"));
+        }
+
+        private boolean validX(double x) {
+            return minX <= x && x <= maxX;
+        }
+
+        private boolean validY(double y) {
+            return minY <= y && y <= maxY;
+        }
+    }
 }

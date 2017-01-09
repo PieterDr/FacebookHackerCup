@@ -34,7 +34,7 @@ public class RandomInput {
         writeToFile("500", inputWriter);
         for(int i = 1; i <= 500; i++) {
             writeToFile("10", inputWriter);
-            for(int j = 1; j <= 100; j++) {
+            for(int j = 1; j <= 10; j++) {
                 int item = random.nextInt(31);
                 writeToFile(Integer.toString(item), inputWriter);
             }

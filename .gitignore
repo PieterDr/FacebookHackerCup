@@ -1,1 +1,4 @@
-
+/nbproject/
+/target/
+nbactions.xml
+settings.xml

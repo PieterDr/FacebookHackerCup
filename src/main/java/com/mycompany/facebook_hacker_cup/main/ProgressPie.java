@@ -14,7 +14,6 @@ public class ProgressPie {
     private static final double RADIAN_TO_DEGREE_FACTOR = 180 / Math.PI;
 
     private final Scanner scanner;
-    private final File output;
     private final BufferedWriter outputWriter;
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
@@ -24,10 +23,9 @@ public class ProgressPie {
     }
 
     public ProgressPie() throws FileNotFoundException {
-        scanner = new Scanner(this.getClass().getClassLoader().getResourceAsStream("input.txt"));
+        scanner = new Scanner(this.getClass().getClassLoader().getResourceAsStream("input_progress_pie.txt"));
         scanner.useDelimiter("\n");
-        output = new File("out.txt");
-        outputWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(output)));
+        outputWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("output_progress_pie.txt")));
     }
 
     private void start() throws IOException {

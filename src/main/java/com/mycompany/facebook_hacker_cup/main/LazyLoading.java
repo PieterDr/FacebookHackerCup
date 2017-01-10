@@ -23,9 +23,9 @@ public class LazyLoading {
     }
 
     public LazyLoading() throws FileNotFoundException {
-        scanner = new Scanner(this.getClass().getClassLoader().getResourceAsStream("lazy_loading.txt"));
+        scanner = new Scanner(this.getClass().getClassLoader().getResourceAsStream("input_lazy_loading.txt"));
         scanner.useDelimiter("\n");
-        outputWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("lazy_loading.txt"))));
+        outputWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("output_lazy_loading.txt"))));
     }
 
     private void start() throws IOException {

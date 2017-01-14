@@ -1,4 +1,4 @@
-package com.mycompany.facebook_hacker_cup.main;
+package com.mycompany.facebook_hacker_cup.main.qualifier;
 
 import java.io.BufferedWriter;
 import java.io.File;

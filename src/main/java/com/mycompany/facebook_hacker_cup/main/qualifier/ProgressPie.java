@@ -1,7 +1,6 @@
-package com.mycompany.facebook_hacker_cup.main;
+package com.mycompany.facebook_hacker_cup.main.qualifier;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,7 +24,7 @@ public class ProgressPie {
     public ProgressPie() throws FileNotFoundException {
         scanner = new Scanner(this.getClass().getClassLoader().getResourceAsStream("input_progress_pie.txt"));
         scanner.useDelimiter("\n");
-        outputWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("output_progress_pie.txt")));
+        outputWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("output_progress_pie_pieter.txt")));
     }
 
     private void start() throws IOException {

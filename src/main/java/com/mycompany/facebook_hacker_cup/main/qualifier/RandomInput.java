@@ -1,4 +1,4 @@
-package com.mycompany.facebook_hacker_cup.main;
+package com.mycompany.facebook_hacker_cup.main.qualifier;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,12 +12,12 @@ public class RandomInput {
     private static final Random random = new Random();
     
     public static void main(String[] args) throws IOException {
-//        progressPie();
-        lazyLoading();
+        progressPie();
+//        lazyLoading();
     }
 
     private static void progressPie() throws IOException {
-        BufferedWriter inputWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("src/main/resources/progress_pie_input.txt"))));
+        BufferedWriter inputWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("src/main/resources/input_progress_pie.txt"))));
         writeToFile("1000", inputWriter);
         for (int i = 0; i < 1000; i++) {
             int p = random.nextInt(101);
@@ -30,7 +30,7 @@ public class RandomInput {
     }
 
     private static void lazyLoading() throws IOException {
-        BufferedWriter inputWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("src/main/resources/lazy_loading_input.txt"))));
+        BufferedWriter inputWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("src/main/resources/input_lazy_loading.txt"))));
         writeToFile("500", inputWriter);
         for(int i = 1; i <= 500; i++) {
             writeToFile("10", inputWriter);

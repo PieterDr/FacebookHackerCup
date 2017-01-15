@@ -25,19 +25,19 @@ public class ProgressPie {
     private BufferedWriter outputWriter;
 
     public ProgressPie() throws FileNotFoundException, IOException {
-        scanner = new Scanner(this.getClass().getClassLoader().getResourceAsStream("round1/pie_progress_example_input.txt"));
+        scanner = new Scanner(this.getClass().getClassLoader().getResourceAsStream("round1/pie_progress.txt"));
         scanner.useDelimiter("\n");
-        outputWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("round1/output_progress_pie.txt"))));
+        outputWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("round1/output_pie_progress.txt"))));
         start();
         scanner.close();
+        outputWriter.close();
     }
 
     private void start() throws IOException {
-        int cases = readInt();
+        long cases = readLong();
         for (int i = 1; i <= cases; i++) {
-            Integer[] caseInfo = readIntLine();
-            int days = caseInfo[0];
-            int piesPerDay = caseInfo[1];
+            Long[] caseInfo = readLongLine();
+            long days = caseInfo[0];
             List<DailyPieList> pieList = new ArrayList<>();
             for (int j = 1; j <= days; j++) {
                 addPies(pieList, j);
@@ -46,91 +46,87 @@ public class ProgressPie {
         }
     }
 
-    private void handleCase(List<DailyPieList> pieList, int days, int caseNumber) throws IOException {
+    private void handleCase(List<DailyPieList> pieList, long days, long caseNumber) throws IOException {
         List<Pie> chosenPies = new ArrayList<>();
         for (int i = 1; i <= days; i++) {
             chosenPies.add(choosePie(pieList.subList(0, i), chosenPies));
         }
-        int price = calculatePrice(chosenPies);
+        long price = calculatePrice(chosenPies);
         String line = "Case #" + caseNumber + ": " + price;
         writeToFile(line);
-        System.out.println(line);
     }
 
     private Pie choosePie(List<DailyPieList> pieList, List<Pie> chosenPies) {
-        Map<Integer, Integer> piesPerDayMap = getPiesPerDay(chosenPies);
-        Pie pie = new Pie(0, -1000);
-        int lowestPrice = Integer.MAX_VALUE;
+        Map<Long, Long> piesPerDayMap = getPiesPerDay(chosenPies);
+        Pie pie = new Pie(0l, -1000l);
+        long lowestPrice = Long.MAX_VALUE;
         for (int i = 0; i < pieList.size(); i++) {
             Optional<Pie> optionalPie = pieList.get(i).getCheapestPie();
             if (optionalPie.isPresent()) {
-                int price = calculatePriceFor(optionalPie.get(), chosenPies, piesPerDayMap);
+                long price = calculatePriceFor(optionalPie.get(), chosenPies, piesPerDayMap);
                 if (price < lowestPrice) {
                     lowestPrice = price;
                     pie = optionalPie.get();
                 }
             }
         }
-        if (pie.day == -1000) {
-            throw new RuntimeException("Day -1000 ;-)");
-        }
         pie.choose();
         return pie;
     }
 
-    private Map<Integer, Integer> getPiesPerDay(List<Pie> pies) {
-        Map<Integer, Integer> result = new HashMap<>();
+    private Map<Long, Long> getPiesPerDay(List<Pie> pies) {
+        Map<Long, Long> result = new HashMap<>();
         for (Pie pie : pies) {
             addPieToMap(result, pie);
         }
         return result;
     }
 
-    private void addPieToMap(Map<Integer, Integer> result, Pie pie) {
+    private void addPieToMap(Map<Long, Long> result, Pie pie) {
         if (result.get(pie.day) == null) {
-            result.put(pie.day, 1);
+            result.put(pie.day, 1l);
         } else {
             result.put(pie.day, result.get(pie.day) + 1);
         }
     }
 
-    private int calculatePrice(List<Pie> chosenPies) {
+    private long calculatePrice(List<Pie> chosenPies) {
         return calculatePriceFor(null, chosenPies, getPiesPerDay(chosenPies));
     }
 
-    private int calculatePriceFor(Pie potentialPie, List<Pie> chosenPies, Map<Integer, Integer> piesPerDayMap) {
-        Map<Integer, Integer> mapCopy = new HashMap<>(piesPerDayMap);
+    private long calculatePriceFor(Pie potentialPie, List<Pie> chosenPies, Map<Long, Long> piesPerDayMap) {
+        Map<Long, Long> mapCopy = new HashMap<>(piesPerDayMap);
         if (potentialPie != null) {
             addPieToMap(mapCopy, potentialPie);
         }
-        int price = 0;
+        long price = 0;
         if(potentialPie != null) {
             price = potentialPie.price;
         }
         for (Pie pie : chosenPies) {
             price += pie.price;
         }
-        for (int i : mapCopy.keySet()) {
-            int value = mapCopy.get(i);
+        for (long i : mapCopy.keySet()) {
+            long value = mapCopy.get(i);
             price += value * value;
         }
         return price;
     }
 
-    private void addPies(List<DailyPieList> pieList, int j) {
-        List<Pie> pies = Arrays.asList(readIntLine()).stream().map(i -> new Pie(i, j)).collect(toList());
+    private void addPies(List<DailyPieList> pieList, long j) {
+        List<Pie> pies = Arrays.asList(readLongLine()).stream().map(i -> new Pie(i, j)).collect(toList());
         pieList.add(new DailyPieList(pies));
     }
 
-    private int readInt() {
-        return Integer.parseInt(scanner.next());
+    private long readLong() {
+        return Long.parseLong(scanner.next());
     }
 
-    private Integer[] readIntLine() {
+    private Long[] readLongLine() {
         String[] input = scanner.next().split("\\s");
-        Integer[] output = new Integer[input.length];
+        Long[] output = new Long[input.length];
         for (int i = 0; i < input.length; i++) {
-            output[i] = Integer.parseInt(input[i]);
+            output[i] = Long.parseLong(input[i]);
         }
         return output;
     }
@@ -142,11 +138,11 @@ public class ProgressPie {
 
     private static class Pie {
 
-        public Integer price;
-        public Integer day;
+        public Long price;
+        public Long day;
         public boolean chosen = false;
 
-        public Pie(Integer price, Integer day) {
+        public Pie(Long price, Long day) {
             this.price = price;
             this.day = day;
         }
